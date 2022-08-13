@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/face_detector_nav"
+    app:startDestination="@id/cameraFragment">
+
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.example.facedetector.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_cameraFragment_to_faceDetectionResultFragment"
+            app:destination="@id/faceDetectionResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/faceDetectionResultFragment"
+        android:name="com.example.facedetector.FaceDetectionResultFragment"
+        android:label="fragment_face_detection_result"
+        tools:layout="@layout/fragment_face_detection_result" >
+        <action
+            android:id="@+id/action_faceDetectionResultFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment"
+            app:popUpTo="@id/cameraFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>
