@@ -9,6 +9,7 @@ buildscript {
         nav_version = "2.5.1"
         room_version = "2.4.3"
         compose_version = '1.2.1'
+        camerax_version = "1.2.0-alpha04"
 
     }
     dependencies {
