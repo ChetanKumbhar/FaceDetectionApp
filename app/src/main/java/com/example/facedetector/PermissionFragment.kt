@@ -13,10 +13,7 @@ import androidx.navigation.fragment.findNavController
 
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 
-/**
- * The sole purpose of this fragment is to request permissions and, once granted, display the
- * camera fragment to the user.
- */
+
 class PermissionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

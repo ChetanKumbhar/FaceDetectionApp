@@ -1,25 +1,67 @@
 package com.example.facedetector
 
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.facedetector.model.FaceDetectionDataModel
+import com.example.facedetector.view.DrawRectangleOnFace
+import com.example.facedetector.viewmodel.FaceDetectionViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 
 /**
  * This fragment will load image and show square border to face on detection
  *
  */
+@AndroidEntryPoint
 class FaceDetectionResultFragment : Fragment() {
-    // TODO:
-
+    private val faceDetectionViewModel: FaceDetectionViewModel by viewModels()
+    private lateinit var path: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_face_detection_result, container, false)
+
+        path = arguments?.getString("path").toString()
+        val view = inflater.inflate(R.layout.fragment_face_detection_result, container, false)
+            .apply {
+
+                this.findViewById<ComposeView>(R.id.composeView_face_detection).setContent {
+                    Surface() {
+                        val filePath = File(Uri.parse(path).path)
+                        draw(
+                            faceDetectionDataModel = faceDetectionViewModel.faceDetectionDataModel,
+                            filePath
+                        )
+                    }
+                }
+            }
+
+        return view
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        context?.let {
+            faceDetectionViewModel.getFaceDetectionJava(it, File(Uri.parse(path).path))
+        }
+
+    }
+
+    @Composable
+    fun draw(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
+        DrawRectangleOnFace(faceDetectionDataModel, filePath)
     }
 
 

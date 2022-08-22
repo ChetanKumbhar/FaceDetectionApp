@@ -44,8 +44,8 @@ class CameraFragment : Fragment() {
         return binding.root
     }
 
-    private fun openFaceDetectionResultFragment(){
-        findNavController().navigate(R.id.action_cameraFragment_to_faceDetectionResultFragment)
+    private fun openFaceDetectionResultFragment(filePath: String){
+        findNavController().navigate(R.id.action_cameraFragment_to_faceDetectionResultFragment,Bundle().apply { putString("path",filePath) })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,11 +53,11 @@ class CameraFragment : Fragment() {
         binding.previewView.post {
             context?.let { setUpCamera (it, binding.previewView, this ) }
         }
-        cameraFragmentViewModel.imageSavedEvent.observe(viewLifecycleOwner,{
+        /*cameraFragmentViewModel.imageSavedEvent.observe(viewLifecycleOwner,{
             if(it == true){
                 openFaceDetectionResultFragment()
             }
-        })
+        }*/
     }
 
     override fun onResume() {
@@ -159,7 +159,7 @@ class CameraFragment : Fragment() {
                         val msg = "Photo capture succeeded: ${output.savedUri}"
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                         Log.d(TAG, msg)
-                       openFaceDetectionResultFragment()
+                       openFaceDetectionResultFragment(output.savedUri.toString())
                     }
                 }
             )
