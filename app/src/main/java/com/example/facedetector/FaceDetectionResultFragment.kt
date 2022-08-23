@@ -61,7 +61,9 @@ class FaceDetectionResultFragment : Fragment() {
 
     @Composable
     fun draw(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
-        DrawRectangleOnFace(faceDetectionDataModel, filePath)
+        context?.let {
+            DrawRectangleOnFace(it, faceDetectionDataModel, filePath)
+        }
     }
 
 

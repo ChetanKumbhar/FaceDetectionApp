@@ -1,5 +1,6 @@
 package com.example.facedetector.view
 
+import android.content.Context
 import android.content.res.Resources
 import android.util.Log
 import androidx.compose.foundation.Canvas
@@ -25,12 +26,16 @@ import java.io.File
 
 @Composable
 fun DrawRectangleOnFace(
+    context: Context,
     faceDetectionDataModel: FaceDetectionDataModel,
     file: File
 ) {
+    val TAG = "DrawRectangleOnFace"
+
+
     if (file.exists()) {
         Log.d(
-            "aaaaaaa",
+            TAG,
             "matrics: ${Resources.getSystem().getDisplayMetrics().density}  ${
                 Resources.getSystem().getDisplayMetrics().xdpi
             }  ${Resources.getSystem().getDisplayMetrics().ydpi} "
@@ -45,21 +50,36 @@ fun DrawRectangleOnFace(
                 .fillMaxWidth()
         )
     } else {
-        Log.d("chetan", "DrawRectangleOnFace: file not found")
+        Log.d(TAG, "DrawRectangleOnFace: file not found")
     }
 
     val faces: List<Face?>? = faceDetectionDataModel.result?.faces
-    var density = 2f//Resources.getSystem().getDisplayMetrics().scaledDensity
+    var density = Resources.getSystem().getDisplayMetrics().scaledDensity
     if (faces != null) {
         if (faces.isNotEmpty()) {
             for (Face in faces) {
                 Canvas(modifier = Modifier) {
                     if (Face != null) {
+
+                        // Get the screen's density scale
+                        // val scale: Float = Resources.getSystem().displayMetrics.scaledDensity
+                        // Convert the dps to pixels, based on density scale
+                        //val GESTURE_THRESHOLD_DP = ViewConfiguration.get(context).scaledTouchSlop
+                        //density = (GESTURE_THRESHOLD_DP * scale + 0.5f)
+                        /*val width =(Face.coordinates?.width ?.times(density)?.plus(0.5f))?: 0f
+                        val height =(Face.coordinates?.height ?.times(density)?.plus(0.5f))?: 0f
+                        val xmin = (Face.coordinates?.xmin ?.times(density)?.plus(0.5f))?: 0f
+                        val ymin = (Face.coordinates?.ymin ?.times(density)?.plus(0.5f))?: 0f
+                        val size = Size(width = width, height = height)*/
                         val width = Face.coordinates?.width?.div(density) ?: 0f
                         val height = Face.coordinates?.height?.div(density) ?: 0f
                         val xmin = Face.coordinates?.xmin?.div(density) ?: 0f
                         val ymin = Face.coordinates?.ymin?.div(density) ?: 0f
                         val size = Size(width = width, height = height)
+                        Log.d(
+                            "DrawRectangleOnFace",
+                            "coordinates:  $width ,$height, $xmin, $ymin, $size"
+                        )
                         drawRect(
                             color = Color.Green,
                             size = size,

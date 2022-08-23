@@ -93,6 +93,9 @@ class CameraFragment : Fragment() {
         // CameraProvider
         val cameraProvider = cameraProvider
             ?: throw IllegalStateException("Camera initialization failed.")
+        if(!cameraProvider.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)){
+            lensFacing = CameraSelector.LENS_FACING_BACK
+        }
 
         // CameraSelector
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()

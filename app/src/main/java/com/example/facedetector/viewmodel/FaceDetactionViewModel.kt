@@ -1,14 +1,20 @@
 package com.example.facedetector.viewmodel
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.res.Resources
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.facedetector.R
 import com.example.facedetector.helper.StorageHelper
 import com.example.facedetector.model.FaceDetectionDataModel
 import com.example.facedetector.network.ApiService
@@ -35,20 +41,78 @@ class FaceDetectionViewModel @Inject constructor(
 ) : ViewModel() {
     var faceDetectionDataModel: FaceDetectionDataModel by mutableStateOf(FaceDetectionDataModel())
 
+    val TAG = "FaceDetectionViewModel"
     //TODO
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getFaceDetectionJava(context: Context,filePath: File) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                context?.let {
-                    faceDetectionDataModel = ImageUpload.uploadImage(it,filePath)
+    fun getFaceDetectionJava(context: Context, filePath: File) {
+        if (checkForInternet(context)) {
+            viewModelScope.launch {
+                withContext(Dispatchers.IO) {
+                    context?.let {
+                        faceDetectionDataModel = ImageUpload.uploadImage(it, filePath)
 
-                    // drawRectangleOnFace(faceDetectionDataModel)
-                    //getFaceDetection(it)
+                        // drawRectangleOnFace(faceDetectionDataModel)
+                        //getFaceDetection(it)
+                    }
                 }
             }
-       }
+        } else {
+            AlertDialog.Builder(context)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(Resources.getSystem().getString(R.string.internet_alert_title))
+                .setMessage(Resources.getSystem().getString(R.string.internet_alert_msg))
+                .setPositiveButton(
+                    Resources.getSystem().getString(R.string.retry)
+                ) { dialogInterface, i -> getFaceDetectionJava(context, filePath) }.show()
+        }
+
+
+    }
+
+    @Composable
+    fun showRetryDialog() {
+        //SimpleAlertDialog(title = , text = )
+    }
+
+    private fun checkForInternet(context: Context): Boolean {
+
+        // register activity with the connectivity manager service
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // if the android version is equal to M
+        // or greater we need to use the
+        // NetworkCapabilities to check what type of
+        // network has the internet connection
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            // Returns a Network object corresponding to
+            // the currently active default data network.
+            val network = connectivityManager.activeNetwork ?: return false
+
+            // Representation of the capabilities of an active network.
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+            return when {
+                // Indicates this network uses a Wi-Fi transport,
+                // or WiFi has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+
+                // Indicates this network uses a Cellular transport. or
+                // Cellular has network connectivity
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+
+                // else return false
+                else -> false
+            }
+        } else {
+            // if the android version is below M
+            @Suppress("DEPRECATION") val networkInfo =
+                connectivityManager.activeNetworkInfo ?: return false
+            @Suppress("DEPRECATION")
+            return networkInfo.isConnected
+        }
     }
 
 
@@ -72,7 +136,7 @@ class FaceDetectionViewModel @Inject constructor(
         val contentType = "multipart/form-data;boundary=Image Upload"
 
 
-        Log.d("chetan", StorageHelper.getOutputDirectory(context).absolutePath + "2022-08-16.jpg")
+        Log.d(TAG, StorageHelper.getOutputDirectory(context).absolutePath + "2022-08-16.jpg")
         val file = File(StorageHelper.getOutputDirectory(context).absolutePath + "/2022-08-16.jpg")
         // val requestFile: RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
         val requestFile: RequestBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
@@ -103,8 +167,8 @@ class FaceDetectionViewModel @Inject constructor(
         result.subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe(
-                { result -> Log.e("success", "chetan = " + result.toString()) },
-                { error -> Log.e("ERROR", "chetan = " + error.message) }
+                { result -> Log.e(TAG, "success = " + result.toString()) },
+                { error -> Log.e(TAG, "error = " + error.message) }
             )
     }
 }

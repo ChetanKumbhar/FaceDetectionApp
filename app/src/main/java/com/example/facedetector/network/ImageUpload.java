@@ -3,9 +3,12 @@ package com.example.facedetector.network;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+
 import androidx.annotation.RequiresApi;
+
 import com.example.facedetector.model.FaceDetectionDataModel;
 import com.google.gson.Gson;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -19,7 +22,7 @@ import java.net.URL;
 public class ImageUpload {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static FaceDetectionDataModel uploadImage(Context context, File fileToUpload) {
-        String TAG = "ImageUpload";
+        String TAG = ImageUpload.class.getSimpleName();
         try {
             if (fileToUpload.exists()) {
 
