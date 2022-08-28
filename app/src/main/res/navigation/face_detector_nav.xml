@@ -12,7 +12,12 @@
         tools:layout="@layout/fragment_camera" >
         <action
             android:id="@+id/action_cameraFragment_to_faceDetectionResultFragment"
-            app:destination="@id/faceDetectionResultFragment" />
+            app:destination="@id/faceDetectionResultFragment">
+            <argument
+                android:name="filePath"
+                app:argType="string"
+                android:defaultValue="null" />
+        </action>
         <action
             android:id="@+id/action_cameraFragment_to_permissionFragment"
             app:destination="@id/permissionFragment"
@@ -28,6 +33,13 @@
             app:destination="@id/cameraFragment"
             app:popUpTo="@id/cameraFragment"
             app:popUpToInclusive="true" />
+        <action android:id="@+id/startMyFragment"
+            app:destination="@+id/myFragment">
+            <argument
+                android:name="filePath"
+                app:argType="string"
+                android:defaultValue="null" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/permissionFragment"

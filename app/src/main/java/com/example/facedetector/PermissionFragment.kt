@@ -2,8 +2,11 @@ package com.example.facedetector
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -13,10 +16,7 @@ import androidx.navigation.fragment.findNavController
 
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 
-/**
- * The sole purpose of this fragment is to request permissions and, once granted, display the
- * camera fragment to the user.
- */
+
 class PermissionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,11 +48,23 @@ class PermissionFragment : Fragment() {
                 builder.setMessage(R.string.permission_alert_msg)
                 builder.setPositiveButton(R.string.ok) { dialog, which ->
                     activity?.finish()
+                    showPermRationale()
                 }
                 builder.show()
             }
         }
     }
+
+    private fun showPermRationale() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(
+            "package", requireActivity().packageName, null
+        )
+        intent.data = uri
+        requireActivity().startActivity(intent)
+    }
+
 
     private fun navigateToCamera() {
         findNavController().navigate(R.id.action_permissionFragment_to_cameraFragment)
