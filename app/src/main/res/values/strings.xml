@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Face Detector</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="permission_alert_msg">We need camera permission to open this application</string>
     <string name="ok">OK</string>
-    <string name="retry">RETRY</string>
+    <string name="back_to_Camera">Take Photo again </string>
+    <string name="cancel">CANCEL</string>
     <string name="alert">Permission Alert !!!</string>
     <string name="take_photo">Take Photo</string>
     <string name="internet_alert_title">Internet not available Alert</string>
     <string name="internet_alert_msg">Please Check Your Internet connectivity and try again</string>
+    <string name="face_detection">FACE DETECTION</string>
+    <string name="no_faces_found">No Faces found /detected</string>
 </resources>

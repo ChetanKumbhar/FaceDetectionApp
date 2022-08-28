@@ -8,10 +8,10 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.facedetector.R
@@ -21,6 +21,9 @@ import com.example.facedetector.network.ApiService
 import com.example.facedetector.network.ImageUpload
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -40,9 +43,14 @@ class FaceDetectionViewModel @Inject constructor(
     private val apiService: ApiService
 ) : ViewModel() {
     var faceDetectionDataModel: FaceDetectionDataModel by mutableStateOf(FaceDetectionDataModel())
-
     val TAG = "FaceDetectionViewModel"
-    //TODO
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+    var eventData = MutableLiveData<String>()
+
+    companion object {
+        const val OPEN_CAMERA = "OPEN_CAMERA"
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getFaceDetectionJava(context: Context, filePath: File) {
@@ -51,9 +59,6 @@ class FaceDetectionViewModel @Inject constructor(
                 withContext(Dispatchers.IO) {
                     context?.let {
                         faceDetectionDataModel = ImageUpload.uploadImage(it, filePath)
-
-                        // drawRectangleOnFace(faceDetectionDataModel)
-                        //getFaceDetection(it)
                     }
                 }
             }
@@ -70,10 +75,6 @@ class FaceDetectionViewModel @Inject constructor(
 
     }
 
-    @Composable
-    fun showRetryDialog() {
-        //SimpleAlertDialog(title = , text = )
-    }
 
     private fun checkForInternet(context: Context): Boolean {
 
@@ -170,5 +171,9 @@ class FaceDetectionViewModel @Inject constructor(
                 { result -> Log.e(TAG, "success = " + result.toString()) },
                 { error -> Log.e(TAG, "error = " + error.message) }
             )
+    }
+
+    fun eventTriggered(event: String) {
+        eventData.postValue(event)
     }
 }

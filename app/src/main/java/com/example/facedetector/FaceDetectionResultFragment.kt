@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.facedetector.model.FaceDetectionDataModel
 import com.example.facedetector.view.DrawRectangleOnFace
 import com.example.facedetector.viewmodel.FaceDetectionViewModel
@@ -50,20 +51,44 @@ class FaceDetectionResultFragment : Fragment() {
         return view
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
+        callFaceDetectionAPI()
+
+        faceDetectionViewModel.eventData.observe(this, {
+            when (it) {
+                FaceDetectionViewModel.OPEN_CAMERA ->
+                    openCamera()
+
+
+            }
+        })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun callFaceDetectionAPI() {
         context?.let {
             faceDetectionViewModel.getFaceDetectionJava(it, File(Uri.parse(path).path))
         }
-
     }
 
     @Composable
     fun draw(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
         context?.let {
-            DrawRectangleOnFace(it, faceDetectionDataModel, filePath)
+            DrawRectangleOnFace(
+                it,
+                faceDetectionDataModel,
+                filePath,
+                faceDetectionViewModel = faceDetectionViewModel
+            )
         }
+    }
+
+    fun openCamera() {
+        findNavController().navigate(R.id.action_faceDetectionResultFragment_to_cameraFragment)
+
     }
 
 
