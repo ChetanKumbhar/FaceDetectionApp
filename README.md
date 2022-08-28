@@ -1,3 +1,7 @@
+steps compile/run/execute
+1.clone and checkout branch
+2.run from android studio
+
 # Coding Challenge
 
 The purpose of this challenge is to understand your coding skills and practices.
