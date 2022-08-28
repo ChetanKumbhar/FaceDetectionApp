@@ -12,7 +12,16 @@
         tools:layout="@layout/fragment_camera" >
         <action
             android:id="@+id/action_cameraFragment_to_faceDetectionResultFragment"
-            app:destination="@id/faceDetectionResultFragment" />
+            app:destination="@id/faceDetectionResultFragment">
+            <argument
+                android:name="filePath"
+                app:argType="string"
+                android:defaultValue="null" />
+        </action>
+        <action
+            android:id="@+id/action_cameraFragment_to_permissionFragment"
+            app:destination="@id/permissionFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/faceDetectionResultFragment"
@@ -21,6 +30,23 @@
         tools:layout="@layout/fragment_face_detection_result" >
         <action
             android:id="@+id/action_faceDetectionResultFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment"
+            app:popUpTo="@id/cameraFragment"
+            app:popUpToInclusive="true" />
+        <action android:id="@+id/startMyFragment"
+            app:destination="@+id/myFragment">
+            <argument
+                android:name="filePath"
+                app:argType="string"
+                android:defaultValue="null" />
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/permissionFragment"
+        android:name="com.example.facedetector.PermissionFragment"
+        android:label="fragment_permission">
+        <action
+            android:id="@+id/action_permissionFragment_to_cameraFragment"
             app:destination="@id/cameraFragment"
             app:popUpTo="@id/cameraFragment"
             app:popUpToInclusive="true" />
