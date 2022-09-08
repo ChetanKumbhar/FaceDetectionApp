@@ -40,7 +40,7 @@ class FaceDetectionResultFragment : Fragment() {
                 this.findViewById<ComposeView>(R.id.composeView_face_detection).setContent {
                     Surface() {
                         val filePath = File(Uri.parse(path).path)
-                        draw(
+                        drawRectangle(
                             faceDetectionDataModel = faceDetectionViewModel.faceDetectionDataModel,
                             filePath
                         )
@@ -60,7 +60,7 @@ class FaceDetectionResultFragment : Fragment() {
         faceDetectionViewModel.eventData.observe(this, {
             when (it) {
                 FaceDetectionViewModel.OPEN_CAMERA ->
-                    openCamera()
+                    navigateToCameraFragment()
 
 
             }
@@ -75,7 +75,7 @@ class FaceDetectionResultFragment : Fragment() {
     }
 
     @Composable
-    fun draw(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
+    fun drawRectangle(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
         context?.let {
             DrawRectangleOnFace(
                 it,
@@ -86,9 +86,8 @@ class FaceDetectionResultFragment : Fragment() {
         }
     }
 
-    fun openCamera() {
+    fun navigateToCameraFragment() {
         findNavController().navigate(R.id.action_faceDetectionResultFragment_to_cameraFragment)
-
     }
 
 
