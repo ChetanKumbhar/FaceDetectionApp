@@ -19,10 +19,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * This is Java Implementation for Image Upload API to imagga.
+ * Copied from imagga Documentation
+ * Not used this class. Implemented kotlin implementation with Retrofit and used.
+ */
 public class ImageUpload {
+    private static final String TAG = "ImageUpload";
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static FaceDetectionDataModel uploadImage(Context context, File fileToUpload) {
-        String TAG = ImageUpload.class.getSimpleName();
         try {
             if (fileToUpload.exists()) {
 
@@ -77,11 +82,9 @@ public class ImageUpload {
                 }
                 responseStreamReader.close();
                 String response = stringBuilder.toString();
-                Log.d(TAG, "Response " + response);
                 responseStream.close();
                 connection.disconnect();
                 FaceDetectionDataModel faceDetectionDataModel = new Gson().fromJson(response, FaceDetectionDataModel.class);
-                Log.d(TAG, "Response " + faceDetectionDataModel.toString());
                 return faceDetectionDataModel;
 
             } else {

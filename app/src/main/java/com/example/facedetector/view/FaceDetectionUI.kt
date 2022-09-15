@@ -1,6 +1,5 @@
 package com.example.facedetector.view
 
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -28,26 +27,18 @@ import com.example.facedetector.model.FaceDetectionDataModel
 import com.example.facedetector.viewmodel.FaceDetectionViewModel
 import java.io.File
 
-//TODO Implement JetPack compose UI
-
-
 @Composable
 fun DrawRectangleOnFace(
-    context: Context,
-    faceDetectionDataModel: FaceDetectionDataModel,
+    faceDetectionDataModel: FaceDetectionDataModel?,
     file: File,
     faceDetectionViewModel: FaceDetectionViewModel
 ) {
-    val TAG = "DrawRectangleOnFace"
-
-
-
     if (file.exists()) {
         Log.d(
-            TAG,
-            "matrics: ${Resources.getSystem().getDisplayMetrics().density}  ${
-                Resources.getSystem().getDisplayMetrics().xdpi
-            }  ${Resources.getSystem().getDisplayMetrics().ydpi} "
+            "FaceDetectionUI",
+            "matrices: ${Resources.getSystem().getDisplayMetrics().density}  ${
+                Resources.getSystem().displayMetrics.xdpi
+            }  ${Resources.getSystem().displayMetrics.ydpi} "
         )
         val imgBitmap = BitmapFactory.decodeFile(file.absolutePath)
         Log.d("FaceDetectionUI", "imgBitmap : ${imgBitmap.width}  ${imgBitmap.height}")
@@ -69,60 +60,72 @@ fun DrawRectangleOnFace(
                  faceDetectionDataModel.status?.type ="error"
                  faceDetectionDataModel.status?.text ="test error 1"}
          }*/
-        if (faceDetectionDataModel.status?.type.equals("success")) {
-            val faces: List<Face?>? = faceDetectionDataModel.result?.faces
-            if (faces != null) {
-                if (faces.isNotEmpty()) {
-                    for (Face in faces) {
-                        Canvas(modifier = Modifier) {
-                            if (Face != null) {
+        if (faceDetectionDataModel != null) {
+            if (faceDetectionDataModel?.status?.type.equals("success")) {
+                val faces: List<Face?>? = faceDetectionDataModel?.result?.faces
+                if (faces != null) {
+                    if (faces.isNotEmpty()) {
+                        for (Face in faces) {
+                            Canvas(modifier = Modifier) {
+                                if (Face != null) {
 
-                                val width =
-                                    calculateWidth(Face.coordinates?.width, imgBitmap.width) ?: 0f
-                                val height =
-                                    calculateHeight(Face.coordinates?.height, imgBitmap.height)
-                                        ?: 0f
-                                val xmin =
-                                    calculateWidth(Face.coordinates?.xmin, imgBitmap.width) ?: 0f
-                                val ymin =
-                                    calculateHeight(Face.coordinates?.ymin, imgBitmap.height) ?: 0f
+                                    val width =
+                                        calculateWidth(Face.coordinates?.width, imgBitmap.width)
+                                            ?: 0f
+                                    val height =
+                                        calculateHeight(Face.coordinates?.height, imgBitmap.height)
+                                            ?: 0f
+                                    val xmin =
+                                        calculateWidth(Face.coordinates?.xmin, imgBitmap.width)
+                                            ?: 0f
+                                    val ymin =
+                                        calculateHeight(Face.coordinates?.ymin, imgBitmap.height)
+                                            ?: 0f
 
-                                val size = Size(width = width, height = height)
-                                Log.d(
-                                    "FaceDetectionUI",
-                                    "coordinates:  $width ,$height, $xmin, $ymin, $size"
-                                )
-                                drawRect(
-                                    color = Color.Green,
-                                    size = size,
-                                    topLeft = Offset(xmin, ymin),
-                                    style = Stroke(width = 2.dp.toPx()),
-                                )
+                                    val size = Size(width = width, height = height)
+                                    Log.d(
+                                        "FaceDetectionUI",
+                                        "coordinates:  $width ,$height, $xmin, $ymin, $size"
+                                    )
+                                    drawRect(
+                                        color = Color.Green,
+                                        size = size,
+                                        topLeft = Offset(xmin, ymin),
+                                        style = Stroke(width = 2.dp.toPx()),
+                                    )
+                                }
                             }
                         }
-                    }
 
-                } else {
-                    alertDialogBackToCamera(
-                        title = stringResource(R.string.face_detection),
-                        text = stringResource(R.string.no_faces_found),
-                        faceDetectionViewModel
-                    )
+                    } else {
+                        alertDialogBackToCamera(
+                            title = stringResource(R.string.face_detection),
+                            text = stringResource(R.string.no_faces_found),
+                            faceDetectionViewModel
+                        )
+                    }
                 }
+            } else if (faceDetectionDataModel?.status?.type.equals("error")) {
+                val type: String = faceDetectionDataModel?.status?.type!!
+                val text: String = faceDetectionDataModel?.status?.text!!
+                alertDialogBackToCamera(
+                    title = "$type",
+                    text = "$text",
+                    faceDetectionViewModel
+                )
+            } else {
+                customCircularProgressBar()
             }
-        } else if (faceDetectionDataModel.status?.type.equals("error")) {
-            val type: String = faceDetectionDataModel.status?.type!!
-            val text: String = faceDetectionDataModel.status?.text!!
+
+        } else {
             alertDialogBackToCamera(
-                title = "$type",
-                text = "$text",
+                title = stringResource(R.string.face_detection),
+                text = stringResource(R.string.no_faces_found_null),
                 faceDetectionViewModel
             )
-        } else {
-            customCircularProgressBar()
         }
     } else {
-        Log.d(TAG, "DrawRectangleOnFace: file not found")
+        Log.d("FaceDetectionUI", "DrawRectangleOnFace: file not found")
     }
 
 }

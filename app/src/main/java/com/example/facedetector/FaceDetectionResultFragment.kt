@@ -70,15 +70,14 @@ class FaceDetectionResultFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun callFaceDetectionAPI() {
         context?.let {
-            faceDetectionViewModel.getFaceDetectionJava(it, File(Uri.parse(path).path))
+            faceDetectionViewModel.getFaceDetection(it, File(Uri.parse(path).path))
         }
     }
 
     @Composable
-    fun drawRectangle(faceDetectionDataModel: FaceDetectionDataModel, filePath: File) {
+    fun drawRectangle(faceDetectionDataModel: FaceDetectionDataModel?, filePath: File) {
         context?.let {
             DrawRectangleOnFace(
-                it,
                 faceDetectionDataModel,
                 filePath,
                 faceDetectionViewModel = faceDetectionViewModel
@@ -86,7 +85,7 @@ class FaceDetectionResultFragment : Fragment() {
         }
     }
 
-    fun navigateToCameraFragment() {
+    private fun navigateToCameraFragment() {
         findNavController().navigate(R.id.action_faceDetectionResultFragment_to_cameraFragment)
     }
 

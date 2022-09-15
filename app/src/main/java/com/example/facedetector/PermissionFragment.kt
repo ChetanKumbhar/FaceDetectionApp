@@ -12,11 +12,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 
 
 private val PERMISSIONS_REQUIRED = arrayOf(Manifest.permission.CAMERA)
 
-
+@AndroidEntryPoint
 class PermissionFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

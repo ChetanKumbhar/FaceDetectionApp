@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".FaceDetectionResultFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/composeView_face_detection"
         android:layout_width="match_parent"

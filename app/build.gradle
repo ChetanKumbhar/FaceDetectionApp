@@ -103,9 +103,6 @@ dependencies {
     implementation "androidx.camera:camera-view:${camerax_version}"
     implementation "androidx.camera:camera-extensions:${camerax_version}"
 
-    //Permissions
-    //TODO : try this api later for permission
-
     implementation("com.google.accompanist:accompanist-permissions:0.18.0")
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'

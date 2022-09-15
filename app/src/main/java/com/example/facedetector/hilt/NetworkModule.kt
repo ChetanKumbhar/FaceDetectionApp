@@ -1,7 +1,8 @@
 package com.example.facedetector.hilt
 
-import com.example.facedetector.helper.CameraHelper
+import com.example.facedetector.network.ApiConstant
 import com.example.facedetector.network.ApiService
+import com.example.facedetector.network.FaceDetectionApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,10 +13,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-/**
- *TODO : Improve this as per requirement
- *
- * */
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -24,14 +21,13 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient() : OkHttpClient =
         OkHttpClient.Builder()
-            //.addInterceptor(RequestIntercepter())
             .build()
 
 
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.imagga.com/v2/")
+        .baseUrl(ApiConstant.BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
         .client(okHttpClient)
@@ -44,6 +40,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCameraHelper(): CameraHelper =
-        CameraHelper()
+    fun provideFaceDetectionApi(apiService: ApiService): FaceDetectionApi = FaceDetectionApi(apiService)
+
 }

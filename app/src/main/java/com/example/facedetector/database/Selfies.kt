@@ -5,12 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 /**
+ * Current project :: database is not used
  *TODO : Improve this as per requirement
  */
 @Entity
 data class Selfies(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "selfie_id") val selfieId: Int,
-
     @ColumnInfo(name = "selfie_uri") val selfieURI: String
 )
